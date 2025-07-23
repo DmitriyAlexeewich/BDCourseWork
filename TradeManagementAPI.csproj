@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>8a6e6375-b505-4919-8a87-75529e1f8849</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate.Abstractions" Version="15.1.7" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.7" />
+    <PackageReference Include="HotChocolate.Data" Version="15.1.7" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.7" />
+    <PackageReference Include="HotChocolate.Diagnostics" Version="15.1.7" />
+    <PackageReference Include="HotChocolate.Execution" Version="15.1.7" />
+    <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.6.1" />
+    <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.6.1" />
+    <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataLayer.DataBaseUpdater\DataLayer.DataBaseUpdater.csproj" />
+    <ProjectReference Include="..\Dto.Abstract\Dto.Abstract.csproj" />
+  </ItemGroup>
+
+</Project>
