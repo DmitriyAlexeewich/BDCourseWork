@@ -10,12 +10,51 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.Abstractions" Version="15.1.7" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.7" />
-    <PackageReference Include="HotChocolate.Data" Version="15.1.7" />
-    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.7" />
-    <PackageReference Include="HotChocolate.Diagnostics" Version="15.1.7" />
-    <PackageReference Include="HotChocolate.Execution" Version="15.1.7" />
+    <Compile Remove="DataLayer.Abstract.DataAccess\**" />
+    <Compile Remove="DataLayer.Abstract.DataBaseUpdater\**" />
+    <Compile Remove="DataLayer.Abstract.Models\**" />
+    <Compile Remove="DataLayer.DataAccess\**" />
+    <Compile Remove="DataLayer.DataBaseUpdater\**" />
+    <Compile Remove="DataLayer.Models\**" />
+    <Compile Remove="Dto.Abstract\**" />
+    <Compile Remove="Dto\**" />
+    <Compile Remove="Infrastructure\**" />
+    <Content Remove="DataLayer.Abstract.DataAccess\**" />
+    <Content Remove="DataLayer.Abstract.DataBaseUpdater\**" />
+    <Content Remove="DataLayer.Abstract.Models\**" />
+    <Content Remove="DataLayer.DataAccess\**" />
+    <Content Remove="DataLayer.DataBaseUpdater\**" />
+    <Content Remove="DataLayer.Models\**" />
+    <Content Remove="Dto.Abstract\**" />
+    <Content Remove="Dto\**" />
+    <Content Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="DataLayer.Abstract.DataAccess\**" />
+    <EmbeddedResource Remove="DataLayer.Abstract.DataBaseUpdater\**" />
+    <EmbeddedResource Remove="DataLayer.Abstract.Models\**" />
+    <EmbeddedResource Remove="DataLayer.DataAccess\**" />
+    <EmbeddedResource Remove="DataLayer.DataBaseUpdater\**" />
+    <EmbeddedResource Remove="DataLayer.Models\**" />
+    <EmbeddedResource Remove="Dto.Abstract\**" />
+    <EmbeddedResource Remove="Dto\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="DataLayer.Abstract.DataAccess\**" />
+    <None Remove="DataLayer.Abstract.DataBaseUpdater\**" />
+    <None Remove="DataLayer.Abstract.Models\**" />
+    <None Remove="DataLayer.DataAccess\**" />
+    <None Remove="DataLayer.DataBaseUpdater\**" />
+    <None Remove="DataLayer.Models\**" />
+    <None Remove="Dto.Abstract\**" />
+    <None Remove="Dto\**" />
+    <None Remove="Infrastructure\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate.Abstractions" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.Data" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.Diagnostics" Version="15.1.8" />
+    <PackageReference Include="HotChocolate.Execution" Version="15.1.8" />
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.6.1" />
     <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.6.1" />
     <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.1" />
@@ -27,8 +66,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataLayer.DataBaseUpdater\DataLayer.DataBaseUpdater.csproj" />
-    <ProjectReference Include="..\Dto.Abstract\Dto.Abstract.csproj" />
+    <ProjectReference Include="DataLayer.DataBaseUpdater\DataLayer.DataBaseUpdater.csproj" />
+    <ProjectReference Include="Dto.Abstract\Dto.Abstract.csproj" />
+    <ProjectReference Include="Dto\Dto.csproj" />
   </ItemGroup>
 
 </Project>

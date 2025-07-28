@@ -1,35 +1,57 @@
-﻿using DataLayer.DataAccess.Context;
+﻿using DataLayer.DataBaseUpdater.DataContext;
 using DataLayer.Models.Models;
 using DataLayer.Models.Models.Products;
 using Dto.Abstract.Result;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace TradeManagementAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class StoresController : ControllerBase
     {
-        private readonly TradeContext _context;
+        private readonly PostgreDbContext _context;
 
-        public StoresController(TradeContext context)
+        public StoresController(PostgreDbContext context)
         {
             _context = context;
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<IEnumerable<Store>>>> GetAll(CancellationToken ct = default)
+        {
+            var query = _context.Stores
+                .Include(x => x.Warehouse)
+                .Include(x => x.Departments)
+                .ThenInclude(x => x.DepartmentProducts);
+
+            if (User.IsSystemAdmin())
+                return ObjectResultDto<IEnumerable<Store>>.Ok(await query.ToArrayAsync(ct));
+
+            if (!User.TryGetUserStore(out var userStore))
+                return ObjectResultDto<IEnumerable<Store>>.Error("No access");
+
+            return ObjectResultDto<IEnumerable<Store>>.Ok(await query.Where(x => x.Number == userStore).ToArrayAsync(ct));
+        }
+
         // Создание магазина
         [HttpPost]
-        public async Task<ActionResult<ObjectResultDto<Store>>> CreateStore(Store store)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Store>>> CreateStore(Store store, CancellationToken ct = default)
         {
             try
             {
                 // Проверка существования торговой базы
-                if (!await _context.Warehouses.AnyAsync(w => w.Name == store.WarehouseName))
+                if (!await _context.Warehouses.AnyAsync(w => w.Name == store.WarehouseName, ct))
                     return ObjectResultDto<Store>.Error("Trade base not found");
 
                 _context.Stores.Add(store);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Store>.Ok(store, "Store created successfully");
             }
@@ -41,7 +63,8 @@ namespace TradeManagementAPI.Controllers
 
         // Обновление магазина
         [HttpPut("{number}")]
-        public async Task<ActionResult<ObjectResultDto<Store>>> UpdateStore(int number, Store updatedStore)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Store>>> UpdateStore(int number, Store updatedStore, CancellationToken ct = default)
         {
             try
             {
@@ -49,11 +72,11 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<Store>.Error("Store number mismatch");
 
                 // Проверка существования торговой базы
-                if (!await _context.Warehouses.AnyAsync(w => w.Name == updatedStore.WarehouseName))
+                if (!await _context.Warehouses.AnyAsync(w => w.Name == updatedStore.WarehouseName, ct))
                     return ObjectResultDto<Store>.Error("Trade base not found");
 
                 _context.Entry(updatedStore).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Store>.Ok(updatedStore, "Store updated successfully");
             }
@@ -71,7 +94,8 @@ namespace TradeManagementAPI.Controllers
 
         // Удаление магазина
         [HttpDelete("{number}")]
-        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteStore(int number)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteStore(int number, CancellationToken ct = default)
         {
             try
             {
@@ -80,7 +104,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<bool>.Error("Store not found", false);
 
                 _context.Stores.Remove(store);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<bool>.Ok(true, "Store deleted successfully");
             }
@@ -92,8 +116,8 @@ namespace TradeManagementAPI.Controllers
 
         // Создание отдела
         [HttpPost("{storeNumber}/departments")]
-        public async Task<ActionResult<ObjectResultDto<Department>>> CreateDepartment(
-            int storeNumber, Department department)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Department>>> CreateDepartment(int storeNumber, Department department, CancellationToken ct = default)
         {
             try
             {
@@ -104,7 +128,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<Department>.Error("Store number mismatch");
 
                 _context.Departments.Add(department);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Department>.Ok(department, "Department created successfully");
             }
@@ -116,8 +140,8 @@ namespace TradeManagementAPI.Controllers
 
         // Обновление отдела
         [HttpPut("{storeNumber}/departments/{departmentName}")]
-        public async Task<ActionResult<ObjectResultDto<Department>>> UpdateDepartment(
-            int storeNumber, string departmentName, Department updatedDepartment)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Department>>> UpdateDepartment(int storeNumber, string departmentName, Department updatedDepartment, CancellationToken ct = default)
         {
             try
             {
@@ -125,7 +149,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<Department>.Error("Identifier mismatch");
 
                 _context.Entry(updatedDepartment).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Department>.Ok(updatedDepartment, "Department updated successfully");
             }
@@ -143,8 +167,8 @@ namespace TradeManagementAPI.Controllers
 
         // Удаление отдела
         [HttpDelete("{storeNumber}/departments/{departmentName}")]
-        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteDepartment(
-            int storeNumber, string departmentName)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteDepartment(int storeNumber, string departmentName, CancellationToken ct = default)
         {
             try
             {
@@ -153,7 +177,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<bool>.Error("Department not found", false);
 
                 _context.Departments.Remove(department);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<bool>.Ok(true, "Department deleted successfully");
             }
@@ -165,8 +189,11 @@ namespace TradeManagementAPI.Controllers
 
         // Добавление товара в отдел
         [HttpPost("{storeNumber}/departments/{departmentName}/products")]
-        public async Task<ActionResult<ObjectResultDto<DepartmentProduct>>> AddProductToDepartment(
-            int storeNumber, string departmentName, DepartmentProduct departmentProduct)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<DepartmentProduct>>> AddProductToDepartment(int storeNumber, 
+            string departmentName, 
+            DepartmentProduct departmentProduct, 
+            CancellationToken ct = default)
         {
             try
             {
@@ -180,11 +207,11 @@ namespace TradeManagementAPI.Controllers
                 // Проверка существования товара
                 if (!await _context.Products.AnyAsync(p =>
                     p.Name == departmentProduct.ProductName &&
-                    p.Grade == departmentProduct.ProductGrade))
+                    p.Grade == departmentProduct.ProductGrade, ct))
                     return ObjectResultDto<DepartmentProduct>.Error("Product not found");
 
                 _context.DepartmentProducts.Add(departmentProduct);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<DepartmentProduct>.Ok(
                     departmentProduct,
@@ -199,9 +226,14 @@ namespace TradeManagementAPI.Controllers
 
         // Обновление товара в отделе
         [HttpPut("{storeNumber}/departments/{departmentName}/products/{productName}/{grade}")]
+        [Authorize]
         public async Task<ActionResult<ObjectResultDto<DepartmentProduct>>> UpdateDepartmentProduct(
-            int storeNumber, string departmentName, string productName, string grade,
-            DepartmentProduct updatedProduct)
+            int storeNumber,
+            string departmentName,
+            string productName,
+            string grade,
+            DepartmentProduct updatedProduct,
+            CancellationToken ct = default)
         {
             try
             {
@@ -212,7 +244,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<DepartmentProduct>.Error("Identifier mismatch");
 
                 _context.Entry(updatedProduct).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<DepartmentProduct>.Ok(
                     updatedProduct,
@@ -233,8 +265,13 @@ namespace TradeManagementAPI.Controllers
 
         // Удаление товара из отдела
         [HttpDelete("{storeNumber}/departments/{departmentName}/products/{productName}/{grade}")]
+        [Authorize]
         public async Task<ActionResult<ObjectResultDto<bool>>> RemoveProductFromDepartment(
-            int storeNumber, string departmentName, string productName, string grade)
+            int storeNumber,
+            string departmentName,
+            string productName,
+            string grade,
+            CancellationToken ct = default)
         {
             try
             {
@@ -245,7 +282,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<bool>.Error("Department product not found", false);
 
                 _context.DepartmentProducts.Remove(departmentProduct);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<bool>.Ok(true, "Product removed from department successfully");
             }

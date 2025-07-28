@@ -1,31 +1,53 @@
 ﻿using DataLayer.DataAccess.Context;
+using DataLayer.DataBaseUpdater.DataContext;
 using DataLayer.Models.Models;
 using DataLayer.Models.Models.Products;
 using Dto.Abstract.Result;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace TradeManagementAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class WarehousesController : ControllerBase
     {
-        private readonly TradeContext _context;
+        private readonly PostgreDbContext _context;
 
-        public WarehousesController(TradeContext context)
+        public WarehousesController(PostgreDbContext context)
         {
             _context = context;
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<IEnumerable<Warehouse>>>> GetAll(CancellationToken ct = default)
+        {
+            var query = _context.Warehouses
+                .Include(x => x.WarehouseProducts)
+                .Include(x => x.Stores);
+
+            if (User.IsSystemAdmin())
+                return ObjectResultDto<IEnumerable<Warehouse>>.Ok(await query.ToArrayAsync(ct));
+
+            if (!User.TryGetWarehouse(out var warehouseName))
+                return ObjectResultDto<IEnumerable<Warehouse>>.Error("No access");
+
+            return ObjectResultDto<IEnumerable<Warehouse>>.Ok(await query.Where(x => x.Name == warehouseName).ToArrayAsync(ct));
+        }
+
         // Создание торговой базы
         [HttpPost]
-        public async Task<ActionResult<ObjectResultDto<Warehouse>>> CreateWarehouse(Warehouse warehouse)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Warehouse>>> CreateWarehouse(Warehouse warehouse, CancellationToken ct = default)
         {
             try
             {
                 _context.Warehouses.Add(warehouse);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Warehouse>.Ok(warehouse, "Warehouse created successfully");
             }
@@ -37,8 +59,8 @@ namespace TradeManagementAPI.Controllers
 
         // Обновление торговой базы
         [HttpPut("{name}")]
-        public async Task<ActionResult<ObjectResultDto<Warehouse>>> UpdateWarehouse(
-            string name, Warehouse updatedWarehouse)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Warehouse>>> UpdateWarehouse(string name, Warehouse updatedWarehouse, CancellationToken ct = default)
         {
             try
             {
@@ -46,7 +68,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<Warehouse>.Error("Warehouse name mismatch");
 
                 _context.Entry(updatedWarehouse).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Warehouse>.Ok(updatedWarehouse, "Warehouse updated successfully");
             }
@@ -64,7 +86,8 @@ namespace TradeManagementAPI.Controllers
 
         // Удаление торговой базы
         [HttpDelete("{name}")]
-        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteWarehouse(string name)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteWarehouse(string name, CancellationToken ct = default)
         {
             try
             {
@@ -73,7 +96,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<bool>.Error("Warehouse not found", false);
 
                 _context.Warehouses.Remove(warehouse);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<bool>.Ok(true, "Warehouse deleted successfully");
             }
@@ -85,8 +108,8 @@ namespace TradeManagementAPI.Controllers
 
         // Добавление товара на базу
         [HttpPost("{name}/products")]
-        public async Task<ActionResult<ObjectResultDto<WarehouseProduct>>> AddProductToWarehouse(
-            string name, WarehouseProduct warehouseProduct)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<WarehouseProduct>>> AddProductToWarehouse(string name, WarehouseProduct warehouseProduct, CancellationToken ct = default)
         {
             try
             {
@@ -96,11 +119,11 @@ namespace TradeManagementAPI.Controllers
                 // Проверка существования товара
                 if (!await _context.Products.AnyAsync(p =>
                     p.Name == warehouseProduct.ProductName &&
-                    p.Grade == warehouseProduct.ProductGrade))
+                    p.Grade == warehouseProduct.ProductGrade, ct))
                     return ObjectResultDto<WarehouseProduct>.Error("Product not found");
 
                 _context.WarehouseProducts.Add(warehouseProduct);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<WarehouseProduct>.Ok(
                     warehouseProduct,
@@ -115,9 +138,13 @@ namespace TradeManagementAPI.Controllers
 
         // Обновление товара на базе
         [HttpPut("{name}/products/{productName}/{grade}")]
+        [Authorize]
         public async Task<ActionResult<ObjectResultDto<WarehouseProduct>>> UpdateWarehouseProduct(
-            string name, string productName, string grade,
-            WarehouseProduct updatedProduct)
+            string name,
+            string productName,
+            string grade,
+            WarehouseProduct updatedProduct, 
+            CancellationToken ct = default)
         {
             try
             {
@@ -127,7 +154,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<WarehouseProduct>.Error("Identifier mismatch");
 
                 _context.Entry(updatedProduct).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<WarehouseProduct>.Ok(
                     updatedProduct,
@@ -148,8 +175,12 @@ namespace TradeManagementAPI.Controllers
 
         // Удаление товара с базы
         [HttpDelete("{name}/products/{productName}/{grade}")]
+        [Authorize]
         public async Task<ActionResult<ObjectResultDto<bool>>> RemoveProductFromWarehouse(
-            string name, string productName, string grade)
+            string name,
+            string productName,
+            string grade,
+            CancellationToken ct = default)
         {
             try
             {
@@ -158,7 +189,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<bool>.Error("Warehouse product not found", false);
 
                 _context.WarehouseProducts.Remove(warehouseProduct);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<bool>.Ok(true, "Product removed from warehouse successfully");
             }

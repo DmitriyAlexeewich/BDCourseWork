@@ -1,4 +1,5 @@
-﻿using TradeManagementAPI.Configuration;
+﻿using Infrastructure.Middleware;
+using TradeManagementAPI.Configuration;
 
 namespace TradeManagementAPI
 {
@@ -21,11 +22,11 @@ namespace TradeManagementAPI
                 logging.AddConfiguration(_configuration.GetSection("Logging"));
             });
 
+            services.AddAuth(_configuration);
+
             //services.AddApplicationServices();
 
             //services.AddKeycloakServices(_configuration);
-
-            services.AddGraphQLServices();
 
             services.AddControllers();
 
@@ -47,15 +48,14 @@ namespace TradeManagementAPI
 
             app.UseRouting();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseMiddleware<AccessControlMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-
-                endpoints.MapGraphQL("/graphql");
-                    //.RequireAuthorization("RequireReportViewer");
             });
         }
     }

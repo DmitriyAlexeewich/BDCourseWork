@@ -1,0 +1,17 @@
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\bin\Debug\net8.0\DataLayer.Abstract.DataAccess.deps.json
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\bin\Debug\net8.0\DataLayer.Abstract.DataAccess.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\bin\Debug\net8.0\DataLayer.Abstract.DataAccess.pdb
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\bin\Debug\net8.0\DataLayer.Abstract.Models.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\bin\Debug\net8.0\Infrastructure.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\bin\Debug\net8.0\DataLayer.Abstract.Models.pdb
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\bin\Debug\net8.0\Infrastructure.pdb
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLayer.Abstract.DataAccess.csproj.AssemblyReference.cache
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLayer.Abstract.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLayer.Abstract.DataAccess.AssemblyInfoInputs.cache
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLayer.Abstract.DataAccess.AssemblyInfo.cs
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLayer.Abstract.DataAccess.csproj.CoreCompileInputs.cache
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLaye.BAA0FE5F.Up2Date
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLayer.Abstract.DataAccess.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\refint\DataLayer.Abstract.DataAccess.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\DataLayer.Abstract.DataAccess.pdb
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.DataAccess\obj\Debug\net8.0\ref\DataLayer.Abstract.DataAccess.dll

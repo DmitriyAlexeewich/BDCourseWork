@@ -1,0 +1,16 @@
+D:\Personal\Stud\OOP\Models\bin\Debug\net8.0\Dto.Abstract.deps.json
+D:\Personal\Stud\OOP\Models\bin\Debug\net8.0\Dto.Abstract.dll
+D:\Personal\Stud\OOP\Models\bin\Debug\net8.0\Dto.Abstract.pdb
+D:\Personal\Stud\OOP\Models\bin\Debug\net8.0\Infrastructure.dll
+D:\Personal\Stud\OOP\Models\bin\Debug\net8.0\Infrastructure.pdb
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.csproj.AssemblyReference.cache
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.AssemblyInfoInputs.cache
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.AssemblyInfo.cs
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.csproj.CoreCompileInputs.cache
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.sourcelink.json
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abst.FDFAF176.Up2Date
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.dll
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\refint\Dto.Abstract.dll
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\Dto.Abstract.pdb
+D:\Personal\Stud\OOP\Models\obj\Debug\net8.0\ref\Dto.Abstract.dll

@@ -1,0 +1,12 @@
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\bin\Debug\net8.0\DataLayer.Abstract.Models.deps.json
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\bin\Debug\net8.0\DataLayer.Abstract.Models.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\bin\Debug\net8.0\DataLayer.Abstract.Models.pdb
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\DataLayer.Abstract.Models.csproj.AssemblyReference.cache
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\DataLayer.Abstract.Models.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\DataLayer.Abstract.Models.AssemblyInfoInputs.cache
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\DataLayer.Abstract.Models.AssemblyInfo.cs
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\DataLayer.Abstract.Models.csproj.CoreCompileInputs.cache
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\DataLayer.Abstract.Models.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\refint\DataLayer.Abstract.Models.dll
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\DataLayer.Abstract.Models.pdb
+D:\Personal\Stud\BD\Curs\DataLayer.Abstract.Models\obj\Debug\net8.0\ref\DataLayer.Abstract.Models.dll

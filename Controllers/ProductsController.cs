@@ -2,11 +2,14 @@
 using DataLayer.Models.Models.Products;
 using DataLayer.Models.Rules;
 using Dto.Abstract.Result;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace TradeManagementAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
@@ -18,14 +21,30 @@ namespace TradeManagementAPI.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<IEnumerable<Product>>>> GetAll(CancellationToken ct = default)
+        {
+            if (!User.IsSystemAdmin())
+                return ObjectResultDto<IEnumerable<Product>>.Error("No access");
+
+            var adminProducts = await _context.Products
+                .Include(x => x.WarehouseProducts)
+                .Include(x => x.DepartmentProducts)
+                .ToArrayAsync(ct);
+
+            return ObjectResultDto<IEnumerable<Product>>.Ok(adminProducts);
+        }
+
         // Создание товара
         [HttpPost]
-        public async Task<ActionResult<ObjectResultDto<Product>>> CreateProduct(Product product)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Product>>> CreateProduct(Product product, CancellationToken ct = default)
         {
             try
             {
                 _context.Products.Add(product);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Product>.Ok(product, "Product created successfully");
             }
@@ -37,8 +56,8 @@ namespace TradeManagementAPI.Controllers
 
         // Обновление товара
         [HttpPut("{name}/{grade}")]
-        public async Task<ActionResult<ObjectResultDto<Product>>> UpdateProduct(
-            string name, string grade, Product updatedProduct)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<Product>>> UpdateProduct(string name, string grade, Product updatedProduct, CancellationToken ct = default)
         {
             try
             {
@@ -46,7 +65,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<Product>.Error("Product identifier mismatch");
 
                 _context.Entry(updatedProduct).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<Product>.Ok(updatedProduct, "Product updated successfully");
             }
@@ -64,7 +83,8 @@ namespace TradeManagementAPI.Controllers
 
         // Удаление товара
         [HttpDelete("{name}/{grade}")]
-        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteProduct(string name, string grade)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<bool>>> DeleteProduct(string name, string grade, CancellationToken ct = default)
         {
             try
             {
@@ -73,7 +93,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<bool>.Error("Product not found", false);
 
                 _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<bool>.Ok(true, "Product deleted successfully");
             }
@@ -85,12 +105,13 @@ namespace TradeManagementAPI.Controllers
 
         // Создание прайс-правила
         [HttpPost("prices")]
-        public async Task<ActionResult<ObjectResultDto<PriceRule>>> CreatePriceRule(PriceRule priceRule)
+        [Authorize]
+        public async Task<ActionResult<ObjectResultDto<PriceRule>>> CreatePriceRule(PriceRule priceRule, CancellationToken ct = default)
         {
             try
             {
                 _context.PriceRules.Add(priceRule);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<PriceRule>.Ok(priceRule, "Price rule created successfully");
             }
@@ -102,11 +123,13 @@ namespace TradeManagementAPI.Controllers
 
         // Обновление прайс-правила
         [HttpPut("prices")]
+        [Authorize]
         public async Task<ActionResult<ObjectResultDto<PriceRule>>> UpdatePriceRule(
             [FromQuery] string storeClass,
             [FromQuery] string productGrade,
             [FromQuery] DateTime startDate,
-            PriceRule updatedRule)
+            PriceRule updatedRule,
+            CancellationToken ct = default)
         {
             try
             {
@@ -116,7 +139,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<PriceRule>.Error("Price rule identifier mismatch");
 
                 _context.Entry(updatedRule).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<PriceRule>.Ok(updatedRule, "Price rule updated successfully");
             }
@@ -134,10 +157,12 @@ namespace TradeManagementAPI.Controllers
 
         // Удаление прайс-правила
         [HttpDelete("prices")]
+        [Authorize]
         public async Task<ActionResult<ObjectResultDto<bool>>> DeletePriceRule(
             [FromQuery] string storeClass,
             [FromQuery] string productGrade,
-            [FromQuery] DateTime startDate)
+            [FromQuery] DateTime startDate,
+            CancellationToken ct = default)
         {
             try
             {
@@ -146,7 +171,7 @@ namespace TradeManagementAPI.Controllers
                     return ObjectResultDto<bool>.Error("Price rule not found", false);
 
                 _context.PriceRules.Remove(priceRule);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(ct);
 
                 return ObjectResultDto<bool>.Ok(true, "Price rule deleted successfully");
             }
